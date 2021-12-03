@@ -55,8 +55,10 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if(CanMove)
-            Vertical = Mathf.Lerp(Vertical, (!MoveOnFingerDown ? (Inputs.TouchDown ? ForwardSpeed : 0.0f) : ForwardSpeed), 5f * Time.deltaTime);
+            Vertical = Mathf.Lerp(Vertical, (MoveOnFingerDown ? (Inputs.TouchDown ? ForwardSpeed : 0.0f) : ForwardSpeed), 5f * Time.deltaTime);
         Horizontal = (CanStrafe ? Inputs.Horizontal : 0.0f) * StrafeSpeed;
+        if(Input.GetKeyDown(KeyCode.Space))
+            Jump();
     }//Update() end
 
     private void FixedUpdate()
@@ -82,7 +84,7 @@ public class PlayerController : MonoBehaviour
     private void HandleSlopeRotation()
     {
         if(debug)
-            Debug.DrawRay(RayOrigin.position, RayOrigin.forward, Color.black);
+            Debug.DrawRay(RayOrigin.position, RayOrigin.forward * 0.5f, Color.black);
         SlopeRot = Self.eulerAngles;
         if(Physics.Raycast(RayOrigin.position, RayOrigin.forward, out hit, 0.5f, Layer))
         {
@@ -112,15 +114,13 @@ public class PlayerController : MonoBehaviour
         }//switch end
     }//OnTriggerEnter() end
 
-    // private void Jump(GameObject Obj)
-    // {
-    //     if(Obj)
-    //         Obj.SetActive(false);
-    //     TakeInput = false;
-    //     IsMoving  = true;
-    //     RB.AddForce(new Vector3(0.0f, Mathf.Sqrt(3.0f * -2f * Physics.gravity.y), 8.0f) , ForceMode.VelocityChange);
-    //     Invoke(nameof(Landed), 1.0f);
-    // }//Jump() end
+    private void Jump(GameObject Obj = null)
+    {
+        if(Obj)
+            Obj.SetActive(false);
+        RB.AddForce(new Vector3(0.0f, Mathf.Sqrt(3.0f * -2f * Physics.gravity.y), 8.0f) , ForceMode.VelocityChange);
+        // Invoke(nameof(Landed), 1.0f);
+    }//Jump() end
 
     // private void Landed() => TakeInput = true;
 
