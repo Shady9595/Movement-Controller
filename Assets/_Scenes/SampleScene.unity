@@ -3453,25 +3453,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f386ef80983794e389be73fc55a91cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TakeInput: 1
   Movement: 0
-  IsMoving: 0
-  ForwardSpeed: 20
+  CanMove: 0
   CanStrafe: 1
-  ClampX: 2
+  MoveOnFingerDown: 0
+  ForwardSpeed: 20
   StrafeSpeed: 20
-  ClampRotationX: 1
-  ClampRotX: 20
-  CamFollow: {fileID: 810622418}
-  Inputs: {fileID: 1268998129}
-  ChildMesh: {fileID: 1595805963}
+  ClampX: 2
+  HandleSlopes: 1
   RayOrigin: {fileID: 176026541}
   Layer:
     serializedVersion: 2
     m_Bits: 64
+  Inputs: {fileID: 1268998129}
+  debug: 0
+  Horizontal: 0
+  Vertical: 0
   MovePos: {x: 0, y: 0, z: 0}
   StrafePos: {x: 0, y: 0, z: 0}
-  Rot: {x: 0, y: 0, z: 0}
+  SlopeRot: {x: 0, y: 0, z: 0}
 --- !u!54 &1577282126
 Rigidbody:
   m_ObjectHideFlags: 0

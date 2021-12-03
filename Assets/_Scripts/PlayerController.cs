@@ -9,88 +9,92 @@ public enum Movements{Straight, Right, Left}
 public class PlayerController : MonoBehaviour
 {
     [Title("PLAYER CONTROLLER", titleAlignment: TitleAlignments.Centered)]
-    [SerializeField] bool           TakeInput = false;
     [DisplayAsString]
     [SerializeField] Movements Movement = Movements.Straight;
     [DisplayAsString]
-    [SerializeField] bool IsMoving       = false;
-    [SerializeField] float ForwardSpeed  = 1.0f;
-    [Space]
-    [DisplayAsString]
-    [SerializeField] bool CanStrafe      = true;
-    [SerializeField] float ClampX        = 3.0f;
-    [SerializeField] float StrafeSpeed   = 1.0f;
-    [SerializeField] bool ClampRotationX = false;
-    [ShowIf(nameof(ClampRotationX), true)]
-    [SerializeField] float ClampRotX     = 20.0f;
-
-    [Space]
-    [SerializeField] CameraFollow  CamFollow = null;  
+    [SerializeField] bool CanMove, CanStrafe = false;
+    [SerializeField] bool MoveOnFingerDown   = false;
+    [SerializeField] float ForwardSpeed      = 1.0f;
+    [SerializeField] float StrafeSpeed       = 1.0f;
+    [SerializeField] float ClampX            = 3.0f;
+    [SerializeField] bool HandleSlopes       = true;
+    [ShowIf("HandleSlopes", true)]
+    [SerializeField] Transform RayOrigin     = null;
+    [ShowIf("HandleSlopes", true)]
+    [SerializeField] LayerMask Layer;
     [SerializeField] InputControls Inputs    = null;
     [Space]
-    [SerializeField] Transform ChildMesh = null;
-    [Space]
-    [SerializeField] Transform RayOrigin = null;
-    [SerializeField] LayerMask Layer;
+    [SerializeField] bool debug = false;
+    [ShowIf("debug", true)]
+    [DisplayAsString]
+    [SerializeField] float Horizontal, Vertical  = 0f;
+    [ShowIf("debug", true)]
+    [DisplayAsString]
+    [SerializeField] Vector3 MovePos, StrafePos, SlopeRot = Vector3.zero;
 
-    
-    private int           Max     = 1;
-    private Transform     Self    = null;
-    private Rigidbody     RB      = null;
-    private Collider      Col     = null;
-    private float         InputX  = 0.0f;
-    public Vector3 MovePos, StrafePos = Vector3.zero;
-    public Vector3 Rot = Vector3.zero;
-
-    private float   _minX, _maxX;
-    // For Rotation Clamping
-    private float _targetAngleX;
-    private float GlobalEulerX;
-
-    private float Forward = 0f;
+    // Private Variables
+    private Transform Self = null;
+    private Transform Mesh = null;
+    private Rigidbody RB   = null;
+    private Collider  Col  = null;
+    private RaycastHit hit = new RaycastHit();
 
     private void Start() => Initialize();
 
     private void Initialize()
     {
-        Self    = transform;
-        RB      = GetComponent<Rigidbody>();
-        Col     = GetComponent<Collider>();
-        _minX   = Self.position.x - ClampX;
-        _maxX   = Self.position.x + ClampX;
+        Self = transform;
+        Mesh = Self.GetChild(0);
+        RB   = GetComponent<Rigidbody>();
+        Col  = GetComponent<Collider>();
+
+        CanMove   = true;
+        CanStrafe = true;
     }//Initialize() end
     
     private void Update()
     {
-        Forward = Inputs.TouchDown ? (Mathf.Lerp(Forward, ForwardSpeed, 5f * Time.deltaTime)) : 0.0f;
-        InputX  = CanStrafe ? Inputs.Horizontal : 0.0f;
+        if(CanMove)
+            Vertical = Mathf.Lerp(Vertical, (!MoveOnFingerDown ? (Inputs.TouchDown ? ForwardSpeed : 0.0f) : ForwardSpeed), 5f * Time.deltaTime);
+        Horizontal = (CanStrafe ? Inputs.Horizontal : 0.0f) * StrafeSpeed;
     }//Update() end
 
     private void FixedUpdate()
     {
-        MovePos = transform.forward * Forward * Time.fixedDeltaTime;
+        HandleMovement();
+
+        if(HandleSlopes)
+            HandleSlopeRotation();
+    }//FixedUpdate() end
+
+    private void HandleMovement()
+    {
+        // Forward Movement
+        MovePos        = Self.forward * Vertical * Time.fixedDeltaTime;
         Self.position += MovePos;
         
-        StrafePos = ChildMesh.localPosition + Vector3.right * InputX * StrafeSpeed * Time.fixedDeltaTime;
-        // StrafePos.x += InputX * StrafeSpeed * Time.fixedDeltaTime;
-        StrafePos.x = Mathf.Clamp(StrafePos.x, _minX, _maxX);
+        // Strafe Movement
+        StrafePos          = Mesh.localPosition + Vector3.right * Horizontal * Time.fixedDeltaTime;
+        StrafePos.x        = Mathf.Clamp(StrafePos.x, -ClampX, ClampX);
+        Mesh.localPosition = StrafePos;
+    }//handleMovement() end
 
-        ChildMesh.localPosition = StrafePos;
-
-        Rot = Self.eulerAngles;
-        RaycastHit hit;
-        Debug.DrawRay(RayOrigin.position, RayOrigin.forward, Color.black);
+    private void HandleSlopeRotation()
+    {
+        if(debug)
+            Debug.DrawRay(RayOrigin.position, RayOrigin.forward, Color.black);
+        SlopeRot = Self.eulerAngles;
         if(Physics.Raycast(RayOrigin.position, RayOrigin.forward, out hit, 0.5f, Layer))
         {
             if(hit.transform)
-                Rot.x = (Vector3.Angle(hit.normal, Vector3.forward) - 90f) * -1f;
+                SlopeRot.x = (Vector3.Angle(hit.normal, Vector3.forward) - 90f) * -1f;
             else
-                Rot.x = 0f;
+                SlopeRot.x = 0f;
         }//if end
         else
-            Rot.x = 0f;
-        Self.eulerAngles = new Vector3(Mathf.LerpAngle(Self.eulerAngles.x, Rot.x, Time.fixedDeltaTime * 10f), Rot.y, Rot.z);
-    }//FixedUpdate() end
+            SlopeRot.x = 0f;
+        Self.eulerAngles = new Vector3(Mathf.LerpAngle(Self.eulerAngles.x, SlopeRot.x, Time.fixedDeltaTime * 10f), SlopeRot.y, SlopeRot.z);
+    }//HandleSlopeRotation() end
 
     private void OnTriggerEnter(Collider other)
     {
@@ -108,49 +112,21 @@ public class PlayerController : MonoBehaviour
         }//switch end
     }//OnTriggerEnter() end
 
-    private void StopRigidbody()
-    {
-        RB.isKinematic = true;
-        gameObject.SetActive(false);
-    }//StopRigidbody() end
-
-    private void Jump(GameObject Obj)
-    {
-        if(Obj)
-            Obj.SetActive(false);
-        TakeInput = false;
-        IsMoving = true;
-        RB.AddForce(new Vector3(0.0f, Mathf.Sqrt(3.0f * -2f * Physics.gravity.y), 8.0f) , ForceMode.VelocityChange);
-        Invoke(nameof(Landed), 1.0f);
-    }//Jump() end
-
-    private void Landed() => TakeInput = true;
-
-    // private void HandleStrafeRotation()
+    // private void Jump(GameObject Obj)
     // {
-    //     Self.rotation = Quaternion.RotateTowards(Self.rotation, 
-    //                                              Quaternion.Euler(0f, InputX * 15f, 0f), 
-    //                                              Time.deltaTime * 200f);
-    // }//HandleStrafeRotation() end
+    //     if(Obj)
+    //         Obj.SetActive(false);
+    //     TakeInput = false;
+    //     IsMoving  = true;
+    //     RB.AddForce(new Vector3(0.0f, Mathf.Sqrt(3.0f * -2f * Physics.gravity.y), 8.0f) , ForceMode.VelocityChange);
+    //     Invoke(nameof(Landed), 1.0f);
+    // }//Jump() end
 
-    private void HandleClampRotation()
-    {
-        GlobalEulerX = Self.eulerAngles.x;
-
-        if(GlobalEulerX > (ClampRotX) && GlobalEulerX < 180f)
-            _targetAngleX = ClampRotX;
-        else if(GlobalEulerX < (360f-ClampRotX) && GlobalEulerX > 180f)
-            _targetAngleX = 360f - ClampRotX;
-        else
-            return;
-
-        // Self.eulerAngles = new Vector3 (Mathf.LerpAngle(Self.eulerAngles.x, _targetAngleX, Time.deltaTime * 10f), 0.0f, 0.0f);
-        Self.eulerAngles = new Vector3 (_targetAngleX, 0.0f, 0.0f);
-    }//HandleClampRotation()
+    // private void Landed() => TakeInput = true;
 
     private void Turn(float Center, Movements Direction)
     {
-        Movement  = Direction;
+        Movement = Direction;
         if(Movement == Movements.Straight)
             Self.DOMoveX(Center, 0.3f);
         else
