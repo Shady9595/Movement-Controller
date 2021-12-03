@@ -22,6 +22,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform RayOrigin     = null;
     [ShowIf("HandleSlopes", true)]
     [SerializeField] LayerMask Layer;
+    [Space]
+    [SerializeField] bool CanJump = false;
+    [ShowIf("CanJump", true)]
+    [SerializeField] Vector3 JumpForce = new Vector3(0f, 3f, 8f);
+    [Space]
     [SerializeField] InputControls Inputs    = null;
     [Space]
     [SerializeField] bool debug = false;
@@ -57,7 +62,7 @@ public class PlayerController : MonoBehaviour
         if(CanMove)
             Vertical = Mathf.Lerp(Vertical, (MoveOnFingerDown ? (Inputs.TouchDown ? ForwardSpeed : 0.0f) : ForwardSpeed), 5f * Time.deltaTime);
         Horizontal = (CanStrafe ? Inputs.Horizontal : 0.0f) * StrafeSpeed;
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && CanJump)
             Jump();
     }//Update() end
 
@@ -84,9 +89,9 @@ public class PlayerController : MonoBehaviour
     private void HandleSlopeRotation()
     {
         if(debug)
-            Debug.DrawRay(RayOrigin.position, RayOrigin.forward * 0.5f, Color.black);
+            Debug.DrawRay(RayOrigin.position, RayOrigin.forward * 0.75f, Color.black);
         SlopeRot = Self.eulerAngles;
-        if(Physics.Raycast(RayOrigin.position, RayOrigin.forward, out hit, 0.5f, Layer))
+        if(Physics.Raycast(RayOrigin.position, RayOrigin.forward, out hit, 0.75f, Layer))
         {
             if(hit.transform)
                 SlopeRot.x = (Vector3.Angle(hit.normal, Vector3.forward) - 90f) * -1f;
@@ -114,15 +119,7 @@ public class PlayerController : MonoBehaviour
         }//switch end
     }//OnTriggerEnter() end
 
-    private void Jump(GameObject Obj = null)
-    {
-        if(Obj)
-            Obj.SetActive(false);
-        RB.AddForce(new Vector3(0.0f, Mathf.Sqrt(3.0f * -2f * Physics.gravity.y), 8.0f) , ForceMode.VelocityChange);
-        // Invoke(nameof(Landed), 1.0f);
-    }//Jump() end
-
-    // private void Landed() => TakeInput = true;
+    private void Jump() => RB.AddForce(new Vector3(JumpForce.x, Mathf.Sqrt(JumpForce.y * -2f * Physics.gravity.y), JumpForce.z) , ForceMode.VelocityChange);
 
     private void Turn(float Center, Movements Direction)
     {
