@@ -3,7 +3,32 @@ guid: ea4408221993c4ed08702290fd5d46c9
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: aaaaa_aaaaa_atlas_color_1Material
+    second: {fileID: 2100000, guid: 2a81e7bbc3baf44e4ae682489b60c9e4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: atlas_color_1Material
+    second: {fileID: 2100000, guid: cd89c51d5c92a40a6924a86ef751d41b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: atlas_color_1Material1
+    second: {fileID: 2100000, guid: 571f6d015d1a34096be11f10d1b9e3ba, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pasted__track_1Material
+    second: {fileID: 2100000, guid: 6bf655de3805044409b19353d6be67b9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: track_1Material
+    second: {fileID: 2100000, guid: bf6ce190d5be54bf597ef09d7e6b5cd7, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

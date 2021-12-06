@@ -94,12 +94,26 @@ public class PlayerController : MonoBehaviour
         if(Physics.Raycast(RayOrigin.position, RayOrigin.forward, out hit, 0.75f, Layer))
         {
             if(hit.transform)
-                SlopeRot.x = (Vector3.Angle(hit.normal, Vector3.forward) - 90f) * -1f;
+            {
+                switch(Movement)
+                {
+                    case Movements.Straight:
+                        SlopeRot.x = (Vector3.Angle(hit.normal, Vector3.forward) - 90f) * -1f;
+                    break;
+                    case Movements.Right:
+                        SlopeRot.x = (Vector3.Angle(hit.normal, Vector3.right) - 90f) * -1f;
+                    break;
+                    case Movements.Left:
+                        SlopeRot.x = (Vector3.Angle(hit.normal, Vector3.right) - 90f);
+                    break;
+                }//switch end
+            }//if end
             else
                 SlopeRot.x = 0f;
         }//if end
         else
             SlopeRot.x = 0f;
+
         Self.eulerAngles = new Vector3(Mathf.LerpAngle(Self.eulerAngles.x, SlopeRot.x, Time.fixedDeltaTime * 10f), SlopeRot.y, SlopeRot.z);
     }//HandleSlopeRotation() end
 
