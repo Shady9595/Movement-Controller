@@ -114,7 +114,7 @@ public class PlayerController : MonoBehaviour
         else
             SlopeRot.x = 0f;
 
-        Self.eulerAngles = new Vector3(Mathf.LerpAngle(Self.eulerAngles.x, SlopeRot.x, Time.fixedDeltaTime * 10f), SlopeRot.y, SlopeRot.z);
+        Self.eulerAngles = new Vector3(Mathf.LerpAngle(Self.eulerAngles.x, SlopeRot.x, Time.fixedDeltaTime * 12f), SlopeRot.y, SlopeRot.z);
     }//HandleSlopeRotation() end
 
     private void OnTriggerEnter(Collider other)

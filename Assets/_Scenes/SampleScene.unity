@@ -2436,7 +2436,7 @@ Transform:
   - {fileID: 1096812327}
   - {fileID: 589834935}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &754386585
 GameObject:
@@ -2535,53 +2535,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 754386585}
   m_Mesh: {fileID: -7393420385775474653, guid: ea4408221993c4ed08702290fd5d46c9, type: 3}
---- !u!1 &810622416
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 810622417}
-  - component: {fileID: 810622418}
-  m_Layer: 0
-  m_Name: CameraFollow
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &810622417
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 810622416}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.6, z: -24.2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &810622418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 810622416}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 145bf72b0c7504870aa8cc492623764a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  updateIn: 1
-  Car: {fileID: 1577282127}
-  CameraFollowSpeed: 10
-  CameraRotationSpeed: 5
 --- !u!1 &829441569
 GameObject:
   m_ObjectHideFlags: 0
@@ -2706,7 +2659,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 870687975}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.00012964012, y: 0, z: -0.00003838539}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 10813975}
@@ -5773,7 +5726,7 @@ MonoBehaviour:
   CanMove: 0
   CanStrafe: 1
   MoveOnFingerDown: 0
-  ForwardSpeed: 30
+  ForwardSpeed: 25
   StrafeSpeed: 20
   ClampX: 2
   HandleSlopes: 1
@@ -5820,7 +5773,7 @@ Transform:
   - {fileID: 1595805963}
   - {fileID: 963194228}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1595805958
 GameObject:
